@@ -1,6 +1,4 @@
 const path = require('path');
-const HtmlWebpackPlugin = require('html-webpack-plugin');
-const ImageMinimizerPlugin = require('image-minimizer-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -8,8 +6,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'public'),
     filename: 'bundle.js',
-    assetModuleFilename: 'images/[hash][ext][query]',
-    clean: true,
+    clean: false, // don't wipe public/, since index.html lives there now (see note below)
   },
   module: {
     rules: [
@@ -19,21 +16,37 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg)$/i,
-        type: 'asset/resource',
+        use: [
+          {
+            loader: 'file-loader',
+            options: {
+              name: 'images/[name].[ext]',
+            },
+          },
+          {
+            loader: 'image-webpack-loader',
+            options: {
+              mozjpeg: {
+                enabled: false,
+              },
+              optipng: {
+                enabled: false,
+              },
+              pngquant: {
+                enabled: false,
+              },
+              gifsicle: {
+                enabled: false,
+              },
+              svgo: {
+                enabled: false,
+              },
+            },
+          },
+        ],
       },
     ],
   },
-  plugins: [
-    new HtmlWebpackPlugin({
-      template: './index.html',
-      filename: 'index.html',
-    }),
-    new ImageMinimizerPlugin({
-      minimizer: {
-        implementation: ImageMinimizerPlugin.sharpMinify,
-      },
-    }),
-  ],
   optimization: {
     minimize: true,
   },
