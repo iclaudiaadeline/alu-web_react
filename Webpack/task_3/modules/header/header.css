@@ -1,0 +1,10 @@
+img#logo {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  display: block;
+}
+
+h1 {
+  margin: 0 0 16px;
+}
